@@ -4,8 +4,10 @@ const fs = require("fs");
 const http = require("http");
 const path = require("path");
 
+const serverPort = perocess.env.SERVER_PORT || 3005;
 const proxyIp = process.env.PROXY_IP || "5.42.77.69";
 const proxyPort = process.env.PROXY_PORT || "31280";
+
 const proxy = `PROXY ${proxyIp}:${proxyPort}`;
 const whitelistFilePath = path.join(__dirname, "whitelist.txt");
 
@@ -64,6 +66,6 @@ const server = http.createServer((req, res) => {
 });
 
 // Запуск сервера на порту 3005
-server.listen(3005, () => {
-  console.log("Сервер запущен на http://localhost:3005");
+server.listen(serverPort, () => {
+  console.log(`Сервер запущен на http://localhost:${serverPort}`);
 });
