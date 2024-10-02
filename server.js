@@ -53,6 +53,7 @@ const server = http.createServer((req, res) => {
       const pacFileContent = generatePacFile(JSON.stringify(domainsObject));
       res.writeHead(200, {
         "Content-Type": "application/x-ns-proxy-autoconfig",
+        "Content-Disposition": "attachment; filename=default.pac",
       });
       res.end(pacFileContent);
     });
