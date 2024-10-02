@@ -22,7 +22,7 @@ const generatePacFile = (domains) => `
       if (dnsResolve(host) === '${proxyIp}') return "DIRECT";
       
       for (const domain of domains) {
-        if (dnsDomainIs(domain, whiteurl)) return '${proxy}';
+        if (dnsDomainIs(host, domain)) return '${proxy}';
       }
 
       return "DIRECT"; 
