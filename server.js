@@ -15,7 +15,7 @@ const generatePacFile = (domains) => `
       const whitelist = ${domains};
       
       const splittedDomain = host.split('.');
-      const domain = [splittedDomain.at(-1), splittedDomain.at(-2)].join('.');
+      const domain = [splittedDomain.at(-2), splittedDomain.at(-1)].join('.');
 
       if (whitelist[domain]) return '${proxy}';
       return "DIRECT"; 
