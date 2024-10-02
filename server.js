@@ -5,15 +5,18 @@ const http = require("http");
 const path = require("path");
 
 const serverPort = process.env.SERVER_PORT || 3005;
-const proxyIp = process.env.PROXY_IP || "192.168.1.1";
+const proxyIp = process.env.PROXY_IP || "127.0.0.1";
 const proxyPort = process.env.PROXY_PORT || "3128";
+const whitelistFileName = process.env.whitelist || "whitelist.txt";
 
 const proxy = `PROXY ${proxyIp}:${proxyPort}`;
-const whitelistFilePath = path.join(__dirname, "whitelist.txt");
+const whitelistFilePath = path.join(__dirname, whitelistFileName);
 
 // Функция генерации PAC-файла на основе whitelist-а
 const generatePacFile = (domains) => `
     function FindProxyForURL(url, host) {
+      if (dnsResolve(host) === '${proxyIp}') return "DIRECT";
+      
       const whitelist = ${domains};
       
       const splittedDomain = host.split('.');
@@ -39,7 +42,7 @@ function getDomainsFromFile(filePath, callback) {
 
 // Создание HTTP-сервера
 const server = http.createServer((req, res) => {
-  if (req.url === "/default") {
+  if (req.url === "/") {
     // Чтение доменов из файла whitelist-а
     getDomainsFromFile(whitelistFilePath, (err, domains) => {
       if (err) {
@@ -55,7 +58,7 @@ const server = http.createServer((req, res) => {
       const pacFileContent = generatePacFile(JSON.stringify(domainsObject));
       res.writeHead(200, {
         "Content-Type": "application/x-ns-proxy-autoconfig",
-        "Content-Disposition": "attachment; filename=default.pac",
+        "Content-Disposition": "attachment; filename=proxy.pac",
       });
       res.end(pacFileContent);
     });
