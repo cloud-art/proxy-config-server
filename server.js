@@ -54,10 +54,7 @@ const server = http.createServer((req, res) => {
       }
 
       // Генерация PAC-файла
-      const domainsObject = Object.fromEntries(
-        domains.map((domain) => [domain, true])
-      );
-      const pacFileContent = generatePacFile(JSON.stringify(domainsObject));
+      const pacFileContent = generatePacFile(JSON.stringify(domains));
       res.writeHead(200, {
         "Content-Type": "application/x-ns-proxy-autoconfig",
         "Content-Disposition": "attachment; filename=proxy.pac",
