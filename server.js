@@ -4,9 +4,9 @@ const fs = require("fs");
 const http = require("http");
 const path = require("path");
 
-const serverPort = perocess.env.SERVER_PORT || 3005;
-const proxyIp = process.env.PROXY_IP || "5.42.77.69";
-const proxyPort = process.env.PROXY_PORT || "31280";
+const serverPort = process.env.SERVER_PORT || 3005;
+const proxyIp = process.env.PROXY_IP || "192.168.1.1";
+const proxyPort = process.env.PROXY_PORT || "3128";
 
 const proxy = `PROXY ${proxyIp}:${proxyPort}`;
 const whitelistFilePath = path.join(__dirname, "whitelist.txt");
