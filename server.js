@@ -12,13 +12,13 @@ const whitelistFilePath = path.join(__dirname, "whitelist.txt");
 // Функция генерации PAC-файла на основе whitelist-а
 const generatePacFile = (domains) => `
     function FindProxyForURL(url, host) {
-      var whitelist = ${JSON.stringify(domains)};
+      const whitelist = ${domains};
       
-      for (var i = 0; i < whitelist.length; i++) {
-        if (dnsDomainIs(host, whitelist[i])) 
-          return ${proxy}
-      }
-      return "DIRECT";  // Прямое подключение
+      const splittedDomain = host.split('.');
+      const domain = [splittedDomain.at(-1), splittedDomain.at(-2)].join('.');
+
+      if (whitelist[domain]) return '${proxy}';
+      return "DIRECT"; 
     }
   `;
 
@@ -47,7 +47,10 @@ const server = http.createServer((req, res) => {
       }
 
       // Генерация PAC-файла
-      const pacFileContent = generatePacFile(domains);
+      const domainsObject = Object.fromEntries(
+        domains.map((domain) => [domain, true])
+      );
+      const pacFileContent = generatePacFile(JSON.stringify(domainsObject));
       res.writeHead(200, {
         "Content-Type": "application/x-ns-proxy-autoconfig",
       });
@@ -59,7 +62,7 @@ const server = http.createServer((req, res) => {
   }
 });
 
-// Запуск сервера на порту 3000
+// Запуск сервера на порту 3005
 server.listen(3005, () => {
   console.log("Сервер запущен на http://localhost:3005");
 });
