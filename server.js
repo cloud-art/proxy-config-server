@@ -15,14 +15,16 @@ const whitelistFilePath = path.join(__dirname, whitelistFileName);
 // Функция генерации PAC-файла на основе whitelist-а
 const generatePacFile = (domains) => `
     function FindProxyForURL(url, host) {
+      url = url.toLowerCase();
+      host = host.toLowerCase();
+      const domains = ${domains};
+
       if (dnsResolve(host) === '${proxyIp}') return "DIRECT";
       
-      const whitelist = ${domains};
-      
-      const splittedDomain = host.split('.');
-      const domain = [splittedDomain.at(-2), splittedDomain.at(-1)].join('.');
+      for (const domain of domains) {
+        if (dnsDomainIs(domain, whiteurl)) return '${proxy}';
+      }
 
-      if (whitelist[domain]) return '${proxy}';
       return "DIRECT"; 
     }
   `;
